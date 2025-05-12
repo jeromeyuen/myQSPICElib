@@ -1,0 +1,16 @@
+ÿØÿÛ«symbol Clamp
+  «type: X»
+  «description: Clamp/Saturation Block, modified from Basso's SPICE book, Fig 2-40»
+  «library file: .\BassoSW.lib»
+  «shorted pins: false»
+  «line (-300,-200) (-150,-200) 7 0 0x1000000 -1 -1»
+  «line (-150,-200) (100,150) 7 0 0x1000000 -1 -1»
+  «line (100,150) (250,150) 7 0 0x1000000 -1 -1»
+  «rect (-500,-400) (500,400) 0 0 0 0xff0000 0x2000000 -1 0 -1»
+  «text (50,400) 1 6 2 0x1000000 -1 -1 "X1"»
+  «text (0,0) 1 0 2 0x1000000 -1 -1 "CLAMP"»
+  «pin (-500,0) (50,0) 1 7 0 0x0 -1 "IN"»
+  «pin (500,0) (-30,0) 1 11 0 0x0 -1 "OUT"»
+  «pin (0,400) (0,0) 1 13 0 0x0 -1 "VMAX"»
+  «pin (0,-400) (-20,0) 1 14 0 0x0 -1 "VMIN"»
+»

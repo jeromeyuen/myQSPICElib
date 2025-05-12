@@ -1,0 +1,33 @@
+* Basso's Switches Library
+* Derived from his Switch-Mode Power Supplies: SPICE simulations
+* and practical design book
+
+* Large Signal VM PWM Switch, CCM, Fig 2-6b
+.subckt LS_VM_CCM a p c d
+Rp a p 1Meg
+B2 a p I=I(VM)*V(d)
+Rs N01 c 1µ
+VM N02 N01 0
+B1 N02 p V=V(d)*(V(a)-V(p))
+.ends LS_VM_CCM
+
+* Small Signal VM PWM Switch, CCM, Fig 2-31
+.subckt SS_VM_CCM a p c d D0
+Rp 1 p 1Meg
+B2 1 p I=I(VM)*V(D0)
+B3 1 a V=((V(a)-V(p))/V(D0))*V(d)
+B4 a p I=I(VM)*V(d)
+Rs N01 c 1µ
+VM N02 N01 0
+B1 N02 p V=V(D0)*(V(1)-V(p))
+.ends SS_VM_CCM
+
+* Clamping Circuit or Saturation Block
+.subckt Clamp IN OUT VMAX VMIN
+G1 0 N01 IN 0 100µ
+R1 N01 0 10K
+D1 VMIN N01 clampD
+D2 N01 VMAX clampD
+E1 OUT 0 N01 0 1
+.MODEL clampD D RON=1e-6 VFWD=0
+.ends Clamp

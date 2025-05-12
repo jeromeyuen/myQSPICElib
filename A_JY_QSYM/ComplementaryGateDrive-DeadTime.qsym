@@ -1,0 +1,28 @@
+ÿØÿÛ«symbol ComplementaryGateDrive-DeadTime
+  «type: X»
+  «description: Generate complementary gate signals with deadtime (JY's modification of kanedahiroshi and KSKelvin's implementation)»
+  «library file: ./myQSPICElib.lib»
+  «shorted pins: false»
+  «line (-200,0) (-100,0) 0 0 0x1000000 -1 -1»
+  «line (-100,0) (-100,250) 0 0 0x1000000 -1 -1»
+  «line (-100,250) (50,250) 0 0 0x1000000 -1 -1»
+  «line (50,250) (50,0) 0 0 0x1000000 -1 -1»
+  «line (50,0) (300,0) 0 0 0x1000000 -1 -1»
+  «line (-200,-200) (-150,-200) 0 0 0x1000000 -1 -1»
+  «line (-150,-200) (-150,-400) 0 0 0x1000000 -1 -1»
+  «line (-150,-400) (100,-400) 0 0 0x1000000 -1 -1»
+  «line (100,-400) (100,-200) 0 0 0x1000000 -1 -1»
+  «line (100,-200) (250,-200) 0 0 0x1000000 -1 -1»
+  «line (250,-200) (250,-400) 0 0 0x1000000 -1 -1»
+  «line (250,-400) (300,-400) 0 0 0x1000000 -1 -1»
+  «rect (-490,-480) (610,320) 0 0 0 0xff0000 0x2000000 -1 0 -1»
+  «text (0,500) 1 0 0 0x1000000 -1 -1 "X1"»
+  «text (50,500) 1 0 2 0x1000000 -1 -1 "COMPLEMENTARYGATEWITHDEADTIME"»
+  «text (-50,-600) 1 0 0 0x0 -1 -1 "Tdead=10u"»
+  «text (-200,-800) 1 0 0 0x0 -1 -1 "ttol=1n"»
+  «text (-150,-1000) 1 0 0 0x0 -1 -1 "HIGH=1"»
+  «text (-200,-1200) 1 0 0 0x0 -1 -1 "LOW=0"»
+  «pin (-500,100) (70,0) 1 7 0 0x0 -1 "IN"»
+  «pin (600,100) (-70,0) 1 11 0 0x0 -1 "Q"»
+  «pin (600,-300) (-70,0) 1 11 0 0x0 -1 "¬Q"»
+»

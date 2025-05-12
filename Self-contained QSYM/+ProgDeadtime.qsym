@@ -1,0 +1,17 @@
+ÿØÿÛ«symbol +ProgDeadtime
+  «type: X»
+  «library file: |.subckt +ProgDeadtime IN SD +DRA -DRA +DRB -DRB Vdd\nV1 Init 0 pulse 0 1 0 tau/10 tau/10 5*tau\n¥1 P1V 0 p1 ¥0 P1V N01 ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ AND TTOL=TTOL REF=exp(-1)\nV3 P1V 0 1\nR1 N01 0 1K\nC1 N03 N01 {tau/1000}\n¥2 P1V 0 ¥1 p2 P1V N02 ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ AND TTOL=TTOL REF=1-exp(-1)\nR2 P1V N02 1K\nC2 N03 N02 {tau/1000}\n¥4 P1V 0 clkA clkB p1 p2 ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ OR TTOL=TTOL\n¥5 P1V 0 CLR ¥2 N04 Init ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ AND TTOL=TTOL\n¥6 P1V 0 PRE ¥3 N03 Init ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ AND TTOL=TTOL\n¥7 P1V 0 A Qa_ Qa_ clkA PRE CLR ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ D-FLOP TTOL=TTOL\n¥8 P1V 0 B Qb_ Qb_ clkB PRE CLR ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ D-FLOP TTOL=TTOL\n¥3 P1V 0 ¥ N04 N03 ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ OR TTOL=TTOL\n¥9 P1V 0 outA ¥4 A B N05 ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ AND TTOL=TTOL\n¥10 P1V 0 ¥5 outB A B SD ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ OR TTOL=TTOL\n¥11 P1V 0 ¥ N05 SD ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ OR\nB1 +DRA -DRA V=V(outA)*V(Vdd)\nB2 +DRB -DRB V=V(outB)*V(Vdd)\n¥12 P1V 0 N03 ¥ IN ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ OR TTOL=TTOL\n.ends +ProgDeadtime»
+  «shorted pins: false»
+  «rect (-700,-700) (700,600) 0 0 0 0xff0000 0xc8c8c8 -1 1 -1»
+  «text (-600,-800) 1 12 0 0x1000000 -1 -1 "X1"»
+  «text (-300,-500) 0.681 13 0 0x1000000 -1 -1 "+ProgDeadtime"»
+  «text (76,-800) 1 7 0 0x0 -1 -1 "TTOL=1n"»
+  «text (55,-950) 1 7 0 0x0 -1 -1 "tau=100n"»
+  «pin (-700,400) (0,0) 1 7 0 0x0 -1 "IN"»
+  «pin (-700,-200) (0,0) 1 7 0 0x0 -1 "SD"»
+  «pin (700,400) (-50,0) 1 11 0 0x0 -1 "+DRA"»
+  «pin (700,100) (-50,0) 1 11 0 0x0 -1 "-DRA"»
+  «pin (700,-200) (-50,0) 1 11 0 0x0 -1 "+DRB"»
+  «pin (700,-500) (-50,0) 1 11 0 0x0 -1 "-DRB"»
+  «pin (0,600) (0,0) 1 13 0 0x0 -1 "Vdd"»
+»

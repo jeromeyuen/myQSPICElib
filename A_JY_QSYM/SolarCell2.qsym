@@ -1,0 +1,18 @@
+ÿØÿÛ«symbol SolarCell2
+  «type: X»
+  «description: Solar Cell without Bypass Diode. Irradiance and Temperature Dependence modelled, but ideality factor is fixed»
+  «library file: .\myQSPICElib.lib»
+  «shorted pins: false»
+  «line (-300,500) (0,200) 0 0 0x1000000 -1 -1»
+  «line (0,200) (300,500) 0 0 0x1000000 -1 -1»
+  «rect (-300,500) (300,-500) 0 0 0 0x1000000 0x1000000 -1 0 -1»
+  «text (-297,500) 1 14 0 0x1000000 -1 -1 "X1"»
+  «text (850,600) 1 0 2 0x1000000 -1 -1 "SOLARCELL2"»
+  «text (1300,400) 1 0 0 0x0 -1 -1 " Isc=8.62 TIsc=0.063701"»
+  «text (1300,150) 1 0 0 0x0 -1 -1 "Ncell=20 N=0.99132 "»
+  «text (1350,-100) 1 0 0 0x0 -1 -1 "Iph=8.6307 Io=1.4176e-10"»
+  «text (1350,-350) 1 0 0 0x0 -1 -1 "Rs=0.098625 Rsh=82.1161"»
+  «pin (-300,0) (70,0) 1 7 0 0x0 -1 "G"»
+  «pin (0,500) (-100,-20) 1 15 0 0x0 -1 "+"»
+  «pin (0,-500) (-80,100) 1 15 0 0x0 -1 "-"»
+»

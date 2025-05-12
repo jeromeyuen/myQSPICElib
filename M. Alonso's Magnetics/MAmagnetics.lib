@@ -1,0 +1,142 @@
+* My QSPICE Symbol Library
+
+* Magnetics (Circuit Elements) by Marcos Alonso 
+; AIRGAP, simulating airgap reluctance
+.subckt airgap 1 2
+; vg, fringing factor (for better modelling of fringing effect. If not used, set to 1)
+; lg, length
+; Ag, area
+.param u0=4*PI*1e-7
+;
+Rg 1 2 {lg/(u0*Ag*vg)}
+;
+.ends airgap
+
+; LINEAR RELUCTOR
+.subckt reluctor_l 1 2
+; vo, fringing factor (for better modelling of fringing effect. If not used, set to 1)
+; ur, relative permeability
+; lo, length
+; Ao, area
+.param u0=4*pi*1e-7
+Rrl 1 2 {lo/(ur*u0*Ao*vo)}
+.ends reluctor_l
+
+; LINEAR RELUCTOR WITH INDUCTION SENSOR
+.subckt reluctor_ls 1 2 3 4
+; vo, fringing factor (for better modelling of fringing effect. If not used, set to 1)
+; ur, relative permeability
+; lo, length
+; Ao, area
+.param u0=4*pi*1e-7
+Rrl 1 2 {lo/(ur*u0*Ao*vo)}
+; B output
+EB 3 4 value={I(Rrl)/Ao} (magnetic flux/area, giving magnetic flux density (B field))
+RB 3 4 10k
+.ends reluctor_ls
+
+; NON-LINEAR RELUCTOR
+.subckt reluctor_nlt 1 2 3 4
+; 2, positive mmf pin
+; 1, negative mmf pin
+; 3, 4, B output
+; lm, length
+; Am, area
+; k1, k2, k3, material coefficients according to Brauer's approximation
+.func ut(B) { 1/( k1*exp(k2*B**2) + k3 ) } ; total permeability
+;
+Em 1 2a value={(lm/(V(um,2)*Am))*I(Em)}
+Rm 2a 2 1m ; small resistance to avoid voltage loop
+Gmb 2 Bm value={I(Em)/Am}
+Rbm Bm 2 1
+Gmu 2 um value={ut(V(Bm,2))}
+Rmu um 2 1
+;
+; B Output
+EB 3 4 value={V(Bm,2)} (magnetic flux density (B field))
+RB 3 4 10k
+;
+.ends reluctor_nlt
+
+; INCREMENTAL NON-LINEAR RELUCTOR
+.subckt reluctor_nld 1 2 3 4
+; 2, positive mmf pin
+; 1, negative mmf pin
+; 3, 4, B output
+; lm, length
+; Am, area
+; k1, k2, k3, material coefficients according to Brauer's approximation
+.func ud(B) { 1/( k1*(1+2*k2*B**2)*exp(k2*B**2) + k3 ) } ; differential permeability
+;
+Em 1 2a value={(lm/(V(um,2)*Am))*I(Em)}
+Rm 2a 2 1m ; small resistance to avoid voltage loop
+Gmb 2 Bm value={I(Em)/Am}
+Rbm Bm 2 1
+Gmu 2 um value={ud(V(Bm,2))}
+Rmu um 2 1
+;
+; B Output
+EB 3 4 value={V(Bm,2)} (magnetic flux density (B field))
+RB 3 4 10k
+;
+.ends reluctor_nld
+
+; IDEAL PERMANENT MAGNET
+.subckt pmagnet_i 1 2
+; Hm, coercive force
+; lm, length
+;
+Em 1 2 value={Hm*lm}
+;
+.ends pmagnet_i
+
+; WINDING
+.subckt winding 1 2 3 4 5 6
+; 1,2 electric pins
+; 3,4 magnetic pins
+; 5,6 inductance value pins
+; Nw, number of turns
+;
+; magnetic part
+EFw 3 4a value={Nw*I(EVw)}
+RFw 4a 4 1m ; small resistance to avoid voltage loop
+;
+; electric part
+GVw 2 w1 value={-I(EFw)}
+Rgw w1 w2 1m
+Lw w2 2 {Nw}
+EVw 1a 2 value={V(w2,2)}
+Rew 1 1a 1m ; to avoid voltage loop
+;
+; inductance calculation
+Ei 5 6 value={-Nw*I(EFw)/I(EVw)}
+Ri 5 6 10k 
+;
+.ends winding
+
+; WINDING2
+.subckt winding2 1 2 3 4 5 6 7 8
+; 1,2 electric pins
+; 3,4 magnetic pins, core 1
+; 5,6 inductance value pins
+; 7,8 magnetic pins, core 2
+; Nw, number of turns
+;
+; magnetic part
+EFw 3 4a value={Nw*I(EVw)}
+RFw 4a 4 1m ; small resistance to avoid voltage loop
+EF1w 7 8a value={Nw*I(EVw)}
+RF1w 8a 8 1m ; small resistance to avoid voltage loop
+;
+; electric part
+GVw 2 w1 value={-(I(EFw)+I(EF1w))}
+Rgw w1 w2 1m
+Lw w2 2 {Nw}
+EVw 1a 2 value={V(w2,2)}
+Rew 1 1a 1m ; to avoid voltage loop
+;
+; inductance calculation
+Ei 5 6 value={-Nw*(I(EFw)+I(EF1w))/I(EVw)}
+Ri 5 6 10k 
+;
+.ends winding2

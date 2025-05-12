@@ -1,0 +1,291 @@
+* My QSPICE Symbol Library
+
+* Ideal Comparator
+* Source: Marcos Alonso (https://youtu.be/kR2L3j4-Llc?si=4S_l2IUGT2FhPdff)
+.subckt MAcomparator in+ in- out
+E1 out 0 value = {if(V(in+, in-) > 0, {Vhigh}, {Vlow})}
+*Rin+ in+ 0 10Meg
+*Rin- in- 0 10Meg
+.ends MAcomparator
+
+* Operational amplifier (with one breaking frequency)
+* Source: Marcos Alonso, Feb. 2021 (https://youtu.be/PDzwhR1heqw?si=hjBnNBsPKvweDEwi)
+* Also used for the MATL431
+.subckt MAopamp 1 2 3
+Ri 1 2 {Ri}
+E1 a 0 1 2 Ao
+R1 a b 1
+C1 b 0 {1/( 2*PI*1*(FBW/Ao) )}
+E2 c 0 b 0 1
+Ro c 3 {Ro}
+.ends MAopamp
+
+* TL431
+* Source: Marcos Alonso (https://youtu.be/YsZ7IgzklLQ?si=p78UyAFxBUE6NuAP)
+* Uses MAopamp
+.subckt TL431_MA K A REF
+X1 REF N01 N04 MAOPAMP Ri=10e6 Ro=1 Ao=750 FBW=1.5e6
+G1 N03 A N04 A 5m
+V1 N02 N03 2.5
+D1 K N02 Diode1
+D2 A K Diode2
+Vref N01 A 2.5
+.model Diode1 D Ron=1m Roff=1Meg Vfwd=1m Vrev=1K
+.model Diode2 D Ron=1m Roff=1Meg Vfwd=1m Vrev=40
+.ends TL431_MA
+
+*LTspice model for TL431 by Fesz (Source: https://drive.google.com/file/d/1oR4Tc6T1lbcTZkchLxnsLFgb7LzD2VAB/view)
+* Includes modelling of input current clamping by REF, and fixing of
+* diode spikes that were a simulation artifact
+* I've modified it to have node names of "K", "A" and "REF"
+*
+*Based on the OnSemi spice model
+*https://www.onsemi.com/pub/Collateral/TL431%20SPICE%20MODELS.DOC
+*
+.subckt TL431_FE K A REF
+D1 K 8 DCLAMP
+D2 5 8 DCLAMP
+R1 2 A 15.6
+C1 2 A .5µ
+R2 3 2 100
+C2 3 4 80n
+R3 4 A 10
+V1 5 A 2
+G3 A 2 1 REF 0.11
+Q1 K REF N003 0 2N3904
+R6 N003 A 5k
+V4 1 A 2.495
+D3 A K DCLAMP
+B1 A 8 I=if(V(3,A)<0,V(3,A)*1.73,0)
+.MODEL DCLAMP D (IS=13.5N RS=25M N=1.59
++ CJO=45P VJ=.75 M=.302 TT=50.4N BV=34V IBV=1MA)
+.MODEL 2N3904 NPN(IS=1E-14 VAF=100
++  Bf=300 IKF=0.4 XTB=1.5 BR=4
++  CJC=4E-12  CJE=8E-12 RB=20 RC=0.1 RE=0.1
++  TR=250E-9  TF=350E-12 ITF=1 VTF=2 XTF=3 Vceo=40 Icrating=200m mfg=NXP)
+.ends TL431_FE
+
+.subckt ComplementaryBufferWithDeadtime I P N
+B1 P 0 V=idt(1,0,inv(V(I)))>Tdead
+B2 N 0 V=idt(1,0,buf(V(I)))>Tdead
+.ends ComplementaryBufferWithDeadtime
+
+* My modified version of kanedahiroshi and KSKelvin's implementation of
+* the same
+.subckt ComplementaryGateWithDeadtime IN Q ¬Q
+B1 N02 0 V=IDT(1,0,inv(V(IN)))>Tdead
+B2 N01 0 V=IDT(1,0,buf(V(IN)))>Tdead
+¥1 P1V N1V Q ¥ N02 ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ OR TTOL=ttol REF=-LOW+0.5
+¥2 P1V N1V ¬Q ¥ N01 ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ ¥ OR TTOL=ttol REF=-LOW+0.5
+V1 P1V 0 HIGH
+V2 N1V 0 LOW
+.ends ComplementaryGateWithDeadtime
+
+.subckt GateDriver I G S
+B1 G S V=if(V(I),{VGSH},{VGSL})
+.ends GateDriver
+
+.subckt SolarCell1 G OUT+ OUT-
+.PARAM Egap=1.8e-19
+.PARAM alphaIsc=TIsc*ISC/100
+.PARAM C=Io/2.708338639e-12
+*.PARAM Rsh5=Rsh*1000/50
+*BR a OUT- R=(Rsh5*Rsh*1000/V(G))/(Rsh5-Rsh*1000/V(G))
+*Rshunt a OUT- Rsh5
+Rshunt a OUT- Rsh
+Rseries a OUT+ Rs
+*B1 TK 0 V=V(T)+273.15
+*Bph OUT- a I=(V(G)/1000)*(Iph+alphaIsc*(V(T)-25))
+*Bd a OUT- I=C*(V(TK)^3)*exp(-Egap/(K*V(TK)))*(exp((V(a)-V(OUT-))/(N*Ncell*(K*V(TK)/Q)))-1)
+Bph OUT- a I=(V(G)/1000)*(Iph+alphaIsc*(TEMP-25))
+Bd a OUT- I=C*((TEMP+273.15)^3)*exp(-Egap/(K*(TEMP+273.15)))*(exp((V(a)-V(OUT-))/(N*Ncell*(K*(TEMP+273.15)/Q)))-1)
+*Bph OUT- a I=(V(G)/1000)*(Iph+alphaIsc*(V(T)-25))
+*Bd a OUT- I=C*((V(T)+273.15)^3)*exp(-Egap/(K*(V(T)+273.15)))*(exp((V(a)-V(OUT-))/(N*Ncell*(K*(V(T)+273.15)/Q)))-1)
+*X1 OUT- OUT+ IDIODE2 Ron=20m Roff=1G Vfwd=0.7 Vrev=100
+X1 OUT- OUT+ IDIODE1 Ron=0.001
+*R1 OUT- 0 1Meg
+.ends SolarCell1
+
+* SolarCell2 doesn't have the bypass diode inbuilt; meant for half-cell module modelling
+.subckt SolarCell2 G OUT+ OUT-
+.PARAM Egap=1.8e-19
+.PARAM alphaIsc=TIsc*ISC/100
+.PARAM C=Io/2.708338639e-12
+Rshunt a OUT- Rsh
+Rseries a OUT+ Rs
+Bph OUT- a I=(V(G)/1000)*(Iph+alphaIsc*(TEMP-25))
+Bd a OUT- I=C*((TEMP+273.15)^3)*exp(-Egap/(K*(TEMP+273.15)))*(exp((V(a)-V(OUT-))/(N*Ncell*(K*(TEMP+273.15)/Q)))-1)
+.ends SolarCell2
+
+.subckt idiode1 A K
+D1 A K Diode
+.model Diode D(Ron={Ron})
+.ends idiode1
+
+.subckt idiode2 A K
+D1 A K Diode
+.model Diode D(Ron={Ron} Roff={Roff} Vfwd={Vfwd} Vrev={Vrev})
+.ends idiode2
+
+* Current Sensor by Marcos Alonso
+.subckt isense in+ in- out
+V1 in+ in- 0
+B1 out 0 V=gain*I(V1)
+.ends isense
+
+* Voltage Sensor
+.subckt vsense in+ in- out
+B1 out 0 V=gain*V(in+,in-)
+.ends vsense
+
+* Magnetics (Circuit Elements) by Marcos Alonso 
+; AIRGAP, simulating airgap reluctance
+.subckt airgap 1 2
+; vg, fringing factor (for better modelling of fringing effect. If not used, set to 1)
+; lg, length
+; Ag, area
+.param u0=4*PI*1e-7
+;
+Rg 1 2 {lg/(u0*Ag*vg)}
+;
+.ends airgap
+
+; LINEAR RELUCTOR
+.subckt reluctor_l 1 2
+; vo, fringing factor (for better modelling of fringing effect. If not used, set to 1)
+; ur, relative permeability
+; lo, length
+; Ao, area
+.param u0=4*pi*1e-7
+Rrl 1 2 {lo/(ur*u0*Ao*vo)}
+.ends reluctor_l
+
+; LINEAR RELUCTOR WITH INDUCTION SENSOR
+.subckt reluctor_ls 1 2 3 4
+; vo, fringing factor (for better modelling of fringing effect. If not used, set to 1)
+; ur, relative permeability
+; lo, length
+; Ao, area
+.param u0=4*pi*1e-7
+Rrl 1 2 {lo/(ur*u0*Ao*vo)}
+; B output
+EB 3 4 value={I(Rrl)/Ao} (magnetic flux/area, giving magnetic flux density (B field))
+RB 3 4 10k
+.ends reluctor_ls
+
+; NON-LINEAR RELUCTOR
+.subckt reluctor_nlt 1 2 3 4
+; 2, positive mmf pin
+; 1, negative mmf pin
+; 3, 4, B output
+; lm, length
+; Am, area
+; k1, k2, k3, material coefficients according to Brauer's approximation
+.func ut(B) { 1/( k1*exp(k2*B**2) + k3 ) } ; total permeability
+;
+Em 1 2a value={(lm/(V(um,2)*Am))*I(Em)}
+Rm 2a 2 1m ; small resistance to avoid voltage loop
+Gmb 2 Bm value={I(Em)/Am}
+Rbm Bm 2 1
+Gmu 2 um value={ut(V(Bm,2))}
+Rmu um 2 1
+;
+; B Output
+EB 3 4 value={V(Bm,2)} (magnetic flux density (B field))
+RB 3 4 10k
+;
+.ends reluctor_nlt
+
+; INCREMENTAL NON-LINEAR RELUCTOR
+.subckt reluctor_nld 1 2 3 4
+; 2, positive mmf pin
+; 1, negative mmf pin
+; 3, 4, B output
+; lm, length
+; Am, area
+; k1, k2, k3, material coefficients according to Brauer's approximation
+.func ud(B) { 1/( k1*(1+2*k2*B**2)*exp(k2*B**2) + k3 ) } ; differential permeability
+;
+Em 1 2a value={(lm/(V(um,2)*Am))*I(Em)}
+Rm 2a 2 1m ; small resistance to avoid voltage loop
+Gmb 2 Bm value={I(Em)/Am}
+Rbm Bm 2 1
+Gmu 2 um value={ud(V(Bm,2))}
+Rmu um 2 1
+;
+; B Output
+EB 3 4 value={V(Bm,2)} (magnetic flux density (B field))
+RB 3 4 10k
+;
+.ends reluctor_nld
+
+; IDEAL PERMANENT MAGNET
+.subckt pmagnet_i 1 2
+; Hm, coercive force
+; lm, length
+;
+Em 1 2 value={Hm*lm}
+;
+.ends pmagnet_i
+
+; WINDING
+.subckt winding 1 2 3 4 5 6
+; 1,2 electric pins
+; 3,4 magnetic pins
+; 5,6 inductance value pins
+; Nw, number of turns
+;
+; magnetic part
+EFw 3 4a value={Nw*I(EVw)}
+RFw 4a 4 1m ; small resistance to avoid voltage loop
+;
+; electric part
+GVw 2 w1 value={-I(EFw)}
+Rgw w1 w2 1m
+Lw w2 2 {Nw}
+EVw 1a 2 value={V(w2,2)}
+Rew 1 1a 1m ; to avoid voltage loop
+;
+; inductance calculation
+Ei 5 6 value={-Nw*I(EFw)/I(EVw)}
+Ri 5 6 10k 
+;
+.ends winding
+
+; WINDING2
+.subckt winding2 1 2 3 4 5 6 7 8
+; 1,2 electric pins
+; 3,4 magnetic pins, core 1
+; 5,6 inductance value pins
+; 7,8 magnetic pins, core 2
+; Nw, number of turns
+;
+; magnetic part
+EFw 3 4a value={Nw*I(EVw)}
+RFw 4a 4 1m ; small resistance to avoid voltage loop
+EF1w 7 8a value={Nw*I(EVw)}
+RF1w 8a 8 1m ; small resistance to avoid voltage loop
+;
+; electric part
+GVw 2 w1 value={-(I(EFw)+I(EF1w))}
+Rgw w1 w2 1m
+Lw w2 2 {Nw}
+EVw 1a 2 value={V(w2,2)}
+Rew 1 1a 1m ; to avoid voltage loop
+;
+; inductance calculation
+Ei 5 6 value={-Nw*(I(EFw)+I(EF1w))/I(EVw)}
+Ri 5 6 10k 
+;
+.ends winding2
+
+*** Basso's SPICE book's models
+* VM PWM Switch, CCM, Fig 2-6b
+.subckt dcXFMRLargeSignal a p c d
+Rp a p 1Meg
+B2 a p I=I(VM)*V(d)
+Rs N01 c 1µ
+VM N02 N01 0
+B1 N02 p V=V(d)*(V(a)-V(p))
+.ends dcXFMRLargeSignal
+

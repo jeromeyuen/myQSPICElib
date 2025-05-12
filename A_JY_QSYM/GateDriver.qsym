@@ -1,0 +1,14 @@
+ÿØÿÛ«symbol GateDriver
+  «type: X»
+  «description: Takes in ground-referenced input and gives an isolated output from VDD to VSS»
+  «library file: .\myQSPICElib.lib»
+  «shorted pins: false»
+  «triangle (-300,300) (-300,-300) (300,0) 0 0 0x1000000 0x2000000 -1 -1»
+  «text (-100,350) 1 0 0 0x1000000 -1 -1 "X1"»
+  «text (0,-600) 1 0 2 0x1000000 -1 -1 "GATEDRIVER"»
+  «text (-100,0) 1 0 1 0x1000000 -1 -1 "GD"»
+  «text (0,-400) 1 0 0 0x0 -1 -1 "VGSH=12 VGSL=-5"»
+  «pin (-300,0) (20,0) 1 15 0 0x0 -1 "I"»
+  «pin (300,200) (-70,0) 1 11 0 0x0 -1 "G"»
+  «pin (300,-200) (-100,0) 1 11 0 0x0 -1 "S"»
+»
