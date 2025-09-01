@@ -1,0 +1,25 @@
+ÿØÿÛ«symbol pmagnet_i_mod
+  «type: X»
+  «description: Permanent magnet (ideal). Modified from Alonso's qsym file.»
+  «library file: |.subckt pmagnet_i 1 2\nEm 1 2 value={H*len}\n.ends pmagnet_i»
+  «shorted pins: false»
+  «line (0,-300) (0,300) 0 0 0xc0 -1 -1»
+  «line (-50,200) (-50,-200) 0 0 0xc0 -1 -1»
+  «line (50,200) (50,-200) 0 0 0xc0 -1 -1»
+  «line (-100,150) (100,150) 0 0 0xc0 -1 -1»
+  «line (-100,100) (100,100) 0 0 0xc0 -1 -1»
+  «line (-100,50) (100,50) 0 0 0xc0 -1 -1»
+  «line (-100,0) (100,0) 0 0 0xc0 -1 -1»
+  «line (-100,-50) (100,-50) 0 0 0xc0 -1 -1»
+  «line (-100,-100) (100,-100) 0 0 0xc0 -1 -1»
+  «line (-100,-150) (100,-150) 0 0 0xc0 -1 -1»
+  «line (100,350) (100,250) 0 0 0xc0 -1 -1»
+  «line (50,300) (150,300) 0 0 0xc0 -1 -1»
+  «rect (-100,200) (100,-200) 0 0 0 0xc0 0x1000000 -1 0 -1»
+  «text (300,350) 1 0 2 0x1000000 -1 -1 "X1"»
+  «text (800,350) 1 15 2 0x1000000 -1 -1 "pmagnet_i"»
+  «text (171,80) 0.63 7 0 0x0 -1 -1 "H=50k"»
+  «text (176,-50) 0.63 7 0 0x0 -1 -1 "len=1m"»
+  «pin (0,300) (0,0) 1 0 0 0x0 -1 "1"»
+  «pin (0,-300) (0,0) 1 0 0 0x0 -1 "2"»
+»

@@ -1,0 +1,19 @@
+ÿØÿÛ«symbol reluctor_l_mod
+  «type: X»
+  «description: Linear reluctor with B field sensor. Flux (current) flowing into "dot" terminal assumed as positive.»
+  «library file: |.subckt reluctor_l_mod 1 2\n.param u0=4*PI*1e-7\nRrl 1 2 {len/(ur*u0*area*fringe)}\n.ends reluctor_l_mod»
+  «shorted pins: false»
+  «line (0,300) (0,200) 0 0 0xc0 -1 -1»
+  «line (0,-200) (0,-300) 0 0 0xc0 -1 -1»
+  «line (100,200) (200,200) 0 0 0xc0 -1 -1»
+  «line (-100,-200) (-200,-200) 0 0 0xc0 -1 -1»
+  «rect (-100,200) (100,-200) 0 0 0 0xc0 0x1000000 -1 0 -1»
+  «text (-350,400) 1 0 2 0x1000000 -1 -1 "X1"»
+  «text (-800,600) 1 15 2 0x1000000 -1 -1 "reluctor_l_mod"»
+  «text (-287,170) 0.63 11 0 0x0 -1 -1 "len=1m"»
+  «text (-286,70) 0.63 11 0 0x0 -1 -1 "area=10u"»
+  «text (-285,-50) 0.63 11 0 0x0 -1 -1 "ur=1000"»
+  «text (-286,-160) 0.63 11 0 0x0 -1 -1 "fringe=1"»
+  «pin (0,300) (0,0) 1 0 0 0x0 -1 "1"»
+  «pin (0,-300) (0,0) 1 0 0 0x0 -1 "2"»
+»

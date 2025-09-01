@@ -1,0 +1,26 @@
+ÿØÿÛ«symbol reluctor_nldiff_brauer
+  «type: X»
+  «description: Incremental non-linear reluctor. Differential permeability calculated based on Brauer's fitting. Modified from Alonso's qsym model.»
+  «library file: |.subckt reluctor_nldiff_brauer 1 2 B\nB1 1 2 V=(len/(V(u)*area))*I(B1)\nB2 B 0 V=I(B1)/area\nB3 u 0 V=1/(k1*(1 + 2*k2*(V(B)**2))*exp(k2*(V(B)**2)) + k3)\n.ends reluctor_nldiff_brauer»
+  «shorted pins: false»
+  «line (0,300) (0,200) 0 0 0xc0 -1 -1»
+  «line (0,-200) (0,-300) 0 0 0xc0 -1 -1»
+  «line (100,0) (200,0) 0 0 0xc0 -1 -1»
+  «line (-100,150) (200,300) 0 0 0xc0 -1 -1»
+  «line (-200,-300) (100,-150) 0 0 0xc0 -1 -1»
+  «line (-100,150) (-100,-250) 0 0 0xc0 -1 -1»
+  «line (100,-150) (100,250) 0 0 0xc0 -1 -1»
+  «ellipse (-200,200) (-150,150) 0 0 0 0xc0 0x1000000 -1 -1»
+  «text (-410,530) 1 0 2 0x1000000 -1 -1 "X1"»
+  «text (-800,400) 1 15 2 0x1000000 -1 -1 "reluctor_nldiff_brauer"»
+  «text (-265,230) 0.63 11 0 0x0 -1 -1 "len=1m"»
+  «text (-264,140) 0.63 11 0 0x0 -1 -1 "area=1u"»
+  «text (-273,-90) 0.63 11 0 0x0 -1 -1 "k1=1.1"»
+  «text (-275,-190) 0.63 11 0 0x0 -1 -1 "k2=30.8"»
+  «text (-278,-290) 0.63 11 0 0x0 -1 -1 "k3=116.1"»
+  «text (140,50) 0.5 0 1 0xc0 -1 -1 "B"»
+  «text (-262,20) 0.5 11 1 0xc0 -1 -1 "u =1 / (k1 * (1 + 2*k2*B^2)*exp(k2*B^2) + k3)"»
+  «pin (0,300) (0,0) 1 0 0 0x0 -1 "1"»
+  «pin (0,-300) (0,0) 1 0 0 0x0 -1 "2"»
+  «pin (200,0) (0,0) 1 0 0 0x0 -1 "3"»
+»

@@ -1,0 +1,18 @@
+ÿØÿÛ«symbol permeance_ls
+  «type: X»
+  «description: Linear permeance»
+  «library file: |.subckt permeance_ls 1 2\n.param u0=4*PI*1e-7\nCrl 1 2 {(ur*u0*area*fringe)/len}\n.ends permeance_ls»
+  «shorted pins: false»
+  «line (0,300) (0,50) 0 0 0xc000c0 -1 -1»
+  «line (0,-50) (0,-300) 0 0 0xc000c0 -1 -1»
+  «line (-200,50) (200,50) 0 0 0xc000c0 -1 -1»
+  «line (200,-50) (-200,-50) 0 0 0xc000c0 -1 -1»
+  «text (-350,400) 1 0 2 0x1000000 -1 -1 "X1"»
+  «text (-800,600) 1 15 2 0x1000000 -1 -1 "permeance_ls"»
+  «text (-287,170) 0.63 11 0 0x0 -1 -1 "len=1m"»
+  «text (-286,70) 0.63 11 0 0x0 -1 -1 "area=10u"»
+  «text (-285,-50) 0.63 11 0 0x0 -1 -1 "ur=1000"»
+  «text (-286,-160) 0.63 11 0 0x0 -1 -1 "fringe=1"»
+  «pin (0,300) (0,0) 1 0 0 0x0 -1 "1"»
+  «pin (0,-300) (0,0) 1 0 0 0x0 -1 "2"»
+»

@@ -1,9 +1,9 @@
 * My QSPICE Symbol Library
 
-* Magnetics (Circuit Elements) by Marcos Alonso 
+* Magnetics (Circuit Elements) by Marcos Alonso
 ; AIRGAP, simulating airgap reluctance
 .subckt airgap 1 2
-; vg, fringing factor (for better modelling of fringing effect. If not used, set to 1)
+; vg, fringing factor (for better modelling of fringing effect. If not used, set to 1. Typically larger than 1.)
 ; lg, length
 ; Ag, area
 .param u0=4*PI*1e-7
@@ -32,7 +32,7 @@ Rrl 1 2 {lo/(ur*u0*Ao*vo)}
 Rrl 1 2 {lo/(ur*u0*Ao*vo)}
 ; B output
 EB 3 4 value={I(Rrl)/Ao} (magnetic flux/area, giving magnetic flux density (B field))
-RB 3 4 10k
+; RB 3 4 10k
 .ends reluctor_ls
 
 ; NON-LINEAR RELUCTOR

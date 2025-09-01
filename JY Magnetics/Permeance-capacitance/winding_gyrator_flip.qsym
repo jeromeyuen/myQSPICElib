@@ -1,0 +1,23 @@
+ÿØÿÛ«symbol winding_gyrator_flip
+  «type: X»
+  «description: Gyrator for permeance-capacitance magnetic circuit, with magnetic part flipped.»
+  «library file: |.subckt gyrator_flip 1 2 3 4 L\nBV 1 2 V=N*I(BF)\nBF 3 4 V=-N*I(BV)\nB1 L 0 V=V(1,2)/ddt(I(BV))\n.ends gyrator_flip»
+  «shorted pins: false»
+  «line (-100,300) (-100,200) 0 0 0x1000000 -1 -1»
+  «line (-100,-200) (-100,-300) 0 0 0x1000000 -1 -1»
+  «line (100,300) (100,-300) 0 0 0xc000c0 -1 -1»
+  «line (100,0) (300,0) 0 0 0xc000c0 -1 -1»
+  «ellipse (0,-250) (50,-300) 0 0 0 0xc000c0 0x1000000 -1 -1»
+  «ellipse (-250,300) (-200,250) 0 0 0 0x1000000 0x1000000 -1 -1»
+  «arc3p (100,50) (100,-50) (100,0) 0 0 0xc000c0 -1 -1»
+  «coil (-150,200) (-50,-200) 0 0 0 0x1000000 -1 -1»
+  «text (0,450) 1 0 2 0x1000000 -1 -1 "X1"»
+  «text (0,-400) 1 0 2 0x1000000 -1 -1 "gyrator_flip"»
+  «text (-239,0) 1 11 0 0x0 -1 -1 "N=1"»
+  «text (190,50) 0.5 0 1 0xc000c0 -1 -1 "L"»
+  «pin (-100,300) (0,0) 1 0 0 0x0 -1 "1"»
+  «pin (-100,-300) (0,0) 1 0 0 0x0 -1 "2"»
+  «pin (100,300) (0,0) 1 0 0 0x0 -1 "3"»
+  «pin (100,-300) (0,0) 1 15 0 0x0 -1 "4"»
+  «pin (300,0) (0,0) 1 0 0 0x0 -1 "L"»
+»
